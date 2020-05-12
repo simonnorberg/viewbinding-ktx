@@ -12,14 +12,16 @@ import kotlin.reflect.KProperty
 
 @MainThread
 fun <T : ViewBinding> Fragment.viewBindings(
-    viewBindingFactory: (View) -> T
+    viewBindingFactory: (View) -> T,
+    onDestroy: (T) -> Unit = {}
 ): ReadOnlyProperty<Fragment, T> {
-    return FragmentViewBinding(this, viewBindingFactory)
+    return FragmentViewBinding(this, viewBindingFactory, onDestroy)
 }
 
 internal class FragmentViewBinding<T : ViewBinding>(
     val fragment: Fragment,
-    val viewBindingFactory: (View) -> T
+    val viewBindingFactory: (View) -> T,
+    val onDestroy: (T) -> Unit
 ) : ReadOnlyProperty<Fragment, T> {
     private var binding: T? = null
 
@@ -29,6 +31,7 @@ internal class FragmentViewBinding<T : ViewBinding>(
                 fragment.viewLifecycleOwnerLiveData.observe(fragment) { viewLifecycleOwner ->
                     viewLifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
                         override fun onDestroy(owner: LifecycleOwner) {
+                            binding?.let(onDestroy)
                             binding = null
                         }
                     })
