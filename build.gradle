@@ -5,7 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.0'
+        classpath 'com.android.tools.build:gradle:4.1.0-rc01'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -32,10 +32,10 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30
     }
     buildFeatures {
         viewBinding = true
@@ -44,10 +44,8 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    libraryVariants.all {
-        it.generateBuildConfigProvider.configure { task ->
-            task.enabled = false
-        }
+    buildFeatures {
+        buildConfig false
     }
 }
 
@@ -59,6 +57,6 @@ dependencies {
     api "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
 }
 
-version = '1.1.1'
+version = '1.1.2'
 group = 'net.simno.viewbinding'
 archivesBaseName = 'viewbinding-ktx'
